@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      html, body { height: 100%; margin: 0; padding: 0; font-family: "Calibri";} 
+
+      .block { float: left;}
+
+      #user-input { position: relative; height: 100%; width: 20%;}
+
+      #options { position: absolute; top: 5%; left: 10%;}
+
+      .form {}
+
+      #map-canvas { height: 100%; width: 80%; margin: 0; padding: 0; }
+
+    </style>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-ZJTx4_Nc8kpK1rlErHiWVGjSxU1Sj14">
+    </script>
+    <script type="text/javascript">
+      function initialize() {
+        var mapOptions = {
+          center: { lat: 1.371232, lng: 103.802948},
+          zoom: 12
+        };
+        var map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+<!-- 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+-->
+    <script>
+var gmap = new google.maps.Map(document.getElementById('map-canvas'), {
+  disableDefaultUI: true,
+  keyboardShortcuts: false,
+  draggable: false,
+  disableDoubleClickZoom: true,
+  scrollwheel: false,
+  streetViewControl: false
+});
+
+var view = new ol.View({
+  // make sure the view doesn't go beyond the 22 zoom levels of Google Maps
+  maxZoom: 21
+});
+view.on('change:center', function() {
+  var center = ol.proj.transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326');
+  gmap.setCenter(new google.maps.LatLng(center[1], center[0]));
+});
+view.on('change:resolution', function() {
+  gmap.setZoom(view.getZoom());
+});
+
+var vector = new ol.layer.Vector({
+  source: new ol.source.GeoJSON({
+    url: 'data/geojson/countries.geojson',
+    projection: 'EPSG:3857'
+  }),
+  style: new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: 'rgba(255, 255, 255, 0.6)'
+    }),
+    stroke: new ol.style.Stroke({
+      color: '#319FD3',
+      width: 1
+    })
+  })
+});
+
+var olMapDiv = document.getElementById('olmap');
+var map = new ol.Map({
+  layers: [vector],
+  interactions: ol.interaction.defaults({
+    altShiftDragRotate: false,
+    dragPan: false,
+    rotate: false
+  }).extend([new ol.interaction.DragPan({kinetic: null})]),
+  target: olMapDiv,
+  view: view
+});
+view.setCenter([0, 0]);
+view.setZoom(1);
+
+olMapDiv.parentNode.removeChild(olMapDiv);
+gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
+    </script>
+<!-- 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+-->
+
+
+
+  </head>
+  <body>
+      <div class="block" id="user-input">
+        <div id="box">
+        <div id="options">
+          
+          <div id="crisis-type">
+            Please select crisis type(s):
+            <form class="form">
+              <input type="radio" name="type" value="Weather">Weather<br>
+              <input type="radio" name="type" value="Dengue">Dengue Fever<br>
+              <input type="radio" name="type" value="Fire">Fire Outbreak<br>
+              <input type="radio" name="type" value="Gas">Gas Leakage
+            </form>
+          </div>
+
+          <br><br>
+
+          <div id="crisis-region">
+            Please select region(s):
+            <form class="form">
+              <input type="checkbox" name="region" value="North">North<br>
+              <input type="checkbox" name="region" value="South">South<br>
+              <input type="checkbox" name="region" value="Central">Central<br>
+              <input type="checkbox" name="region" value="East">East<br>
+              <input type="checkbox" name="region" value="West">West
+            </form>
+          </div>
+
+        </div>
+        </div>
+      </div>
+      <div class="block" id="map-canvas"></div>
+  </body>
+</html>
