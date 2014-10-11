@@ -102,82 +102,102 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 -->
 
 <script type="text/javascript">
-    var map;
-    var elevator;
-    var marker;
-    var myOptions;
+    
+  var map;
+  var infowindow;
+  var coordinates;
+  var myOptions;
+  var events;
+  var addrmap = new Object();
+  var iterations = 0;
 
-    $(document).ready(function () {
 
-      // var map;
-      // var elevator;
-      myOptions = {
-          zoom: 12,
-          center: { lat: 1.371232, lng: 103.818948},
-          mapTypeId: 'terrain'
-      };
-      map = new google.maps.Map($('#map-canvas')[0], myOptions);
+  // events = [
+  //   {address: 'Singapore 320115', priority: 1}, 
+  //   {address: 'Singapore 639798', priority: 2}
+  // ];
 
+
+  // Initialize the map on document ready
+  $(document).ready(function () {
+    myOptions = {
+        zoom: 12,
+        center: { lat: 1.371232, lng: 103.818948},
+        mapTypeId: 'terrain'
+    };
+    map = new google.maps.Map($('#map_canvas')[0], myOptions);
+  });
+
+
+  // alert(JSON.stringify(inputArray)); //works
+  // alert(inputArray.error); //works
+  // alert(inputArray.events["1"]["location"]); //works
+
+  
+  // Geocode addresses of all points to be displayed to obtain coordinates
+  function geocodePoints (eventsData) {
+
+    events = eventsData;
+
+    for (var x = 0; x < events.length; x++) {
+          
+      var p;
+      var latlng;
+
+      $.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address='+events[x].address+'&sensor=false', null, function (data) {
+        p = data.results[0].geometry.location 
+        latlng = new google.maps.LatLng(p.lat, p.lng);
+        addrmap[data.results[0].formatted_address] = latlng;
+
+        iterations++;
+        if (iterations == events.length) {
+          populateWithMarkers();
+        }
+      });
+
+    }
+  }
+
+
+  // Populate the map display with all the markers
+  function populateWithMarkers () {
+    for (var x = 0; x < events.length; x++) {
+            createMarker(x);
+    }
+  }
+
+
+  // Create each marker and add an infowindow listener 
+  function createMarker (index) {
+
+    // extract latlng coordinates
+    coordinates = addrmap[events[index].address];
+
+    // create marker object
+    var marker = new google.maps.Marker({
+      position: coordinates,
+      map: map
     });
 
-    function populateWithMarkers (inputArray) {
+    // set the content string for the info window (address, description, priority)
+    var contentString = "No data..";
+    if (events[index].priority==1)
+      contentString = "<p><b>" + events[index].address + "</b><br />" + events[index].description + "<br />Severity: Mild</p>";
+    else if  (events[index].priority==2)
+      contentString = "<p><b>" + events[index].address + "</b><br />" + events[index].description + "<br />Severity: Urgent</p>";
+    else if  (events[index].priority==3)
+      contentString = "<p><b>" + events[index].address + "</b><br />" + events[index].description + "<br />Severity: Critical</p>";
+    else
+      contentString = "<p><b>" + events[index].address + "</b><br />" + events[index].description + "<br />Severity: No data..</p>";
 
-	  //alert();
-      //['Singapore 320115', 'description', priority-3], 
-      var events = [
-        {address: 'Singapore 320115', priority: 3}, 
-        {address: 'NTU Hall of Residence 7', priority: 3}, 
-        // ['Raffles City', 2],
-        // ['AMK Hub', 2],
-        // ['Singapore Changi Airport', 1],
-        // ['Singapore Turf Club', 2],
-        // ['Singapore Upper Pierce Reservoir', 1]
-      ];
-	  
-	alert(JSON.stringify(inputArray)); //works
-	alert(inputArray.error); //works
-	alert(inputArray.events["1"]["location"]); //works
-	
+    // add click event listener to marker which opens infowindow          
+    google.maps.event.addListener(marker, 'click', function() {
+      if (infowindow) infowindow.close();
+      infowindow = new google.maps.InfoWindow({content: contentString});
+      infowindow.open(map,marker); 
+    });
 
-      for (var x = 0; x < events.length; x++) {
-          
-          var p;
-          var latlng;
-
-          $.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address='+events[x].address+'&sensor=false', null, function (data) {
-              p = data.results[0].geometry.location
-              latlng = new google.maps.LatLng(p.lat, p.lng);
-
-
-              marker = new google.maps.Marker({
-              position: latlng,
-              map: map
-              //title: events[x][0]
-              });
-
-              var contentString;
-              //description, priority
-               if (events[x].priority==1)
-                 contentString = "Severity: Mild";
-               else if  (events[x].priority==2)
-                 contentString = "Severity: Urgent";
-               else if  (events[x].priority==3)
-                 contentString = "Severity: Critical";
-               else
-                 contentString = "No data..";
-
-              var infoWindow = new google.maps.InfoWindow({
-                content: contentString
-              });
-
-              //add click event listener to marker which will open infoWindow          
-              google.maps.event.addListener(marker, 'click', function() {
-                infoWindow.open(map,marker); // click on marker opens info window 
-              });
-
-              });
-      }
-    }
+  }
     
 </script>
 
@@ -250,7 +270,7 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 			
 			<script type="text/javascript">
 			var eventsData = <?php echo json_encode($events) ?>;
-			populateWithMarkers(eventsData);
+			geocodePoints(eventsData);
 			</script>
 			
 			</div>
