@@ -1,5 +1,5 @@
 <?php
-  function getEventTypesOnstart(){
+  function getEventTypesOnStart(){
   //$eventTypes = '{"error":0,"eventTypes":[{"id":1,"name":"Dengue"},{"id":2,"name":"Gas Leak"},{"id":3,"name":"Traffic Accident"}]}';
   $url = "http://172.22.245.232:9000/getEventTypes";
  

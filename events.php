@@ -100,6 +100,11 @@
 		return $eventCount;
 	}
 
+	function getEventTypes ()
+	{
+		include 'eventTypes.php';
+		$eventTypes = getEventTypesOnStart();
+	}
 	// Connects to server and retrieves events 
 	// Returns the array
 	function getEvents ($requestedTypeId, $requestedTimePeriodInHour)

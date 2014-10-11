@@ -225,7 +225,10 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 					$type = $_POST['type'];
 			
 					include	 'events.php';
-					$typeID = 0;
+         /* $eventTypes = getEventTypes ();
+          $typeID = 0;
+          $typeID = eventTypes['eventTypes'][$type];*/
+					
 					switch ($type) {
 						case 'Dengue':
 							$typeID = 1;
