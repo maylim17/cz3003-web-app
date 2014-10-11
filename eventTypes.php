@@ -1,24 +1,10 @@
 <?php
-  $eventTypes = '{"error":0,"eventTypes":[{"id":1,"name":"Dengue"},{"id":2,"name":"Gas Leak"},{"id":3,"name":"Traffic Accident"}]}';
-  $decoded = json_decode($eventTypes, TRUE);
-  if (is_null($decoded)) {
-    /*$response['status'] = array(
-      'type' => 'error',
-      'value' => 'Invalid JSON value found',
-    );
-    $response['request'] = $eventTypes;*/
-    $response = array($eventTypes);
-  }
-  else {
-    /*$response['status'] = array(
-      'type' => 'message',
-      'value' => 'Valid JSON value found',
-    );
-    //Send the original message back.
-    $response['request'] = $decoded;*/
-    $response = $decoded;
-  }
-
-$encoded = json_encode($response);
-header('Content-type: application/json');
-exit($encoded);
+  //$eventTypes = '{"error":0,"eventTypes":[{"id":1,"name":"Dengue"},{"id":2,"name":"Gas Leak"},{"id":3,"name":"Traffic Accident"}]}';
+  $url = "http://172.22.245.232:9000/getEventTypes";
+ 
+  $result = file_get_contents($url);
+  echo $result;
+  $decoded = json_decode($result, TRUE);
+  var_dump($decoded);
+ 
+?>
