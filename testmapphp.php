@@ -145,7 +145,7 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 			<?php
 				if (isset($_POST['type']) && $_POST['type']!='Weather') {
 					$type = $_POST['type'];
-			
+					
 					include	 'events.php';
          /* $eventTypes = getEventTypes ();
           $typeID = 0;
@@ -162,24 +162,16 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 							$typeID = 3;
 							break;
 						default:
+							$typeID = 0;
 							break;
 					}
 					if ($typeID!=0) {
 						$events = getTestEvents($typeID, 24);	// for testing
 						//getEvents($typeID, 24);
 						//var_dump($events);
-					//	echo '<script type="text/javascript">', 'populateWithMarkers();', '</script>';
 					}
-				}
+				} else {$events = 'weather';	}
 			?>	
-				
-			<script type="text/javascript">
-			$(document).ready(function () {
-			
-			var eventsData = <?php echo json_encode($events) ?>;
-			geocodePoints(eventsData);
-			});
-			</script>
 			
 			</div>
 			
@@ -212,8 +204,11 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
     };
     map = new google.maps.Map($('#map-canvas')[0], myOptions);
 	
-		
-	
+	var eventsData = <?php echo json_encode($events) ;?>;
+	//console.log(eventsData);
+	if (eventsData!='weather') {
+		geocodePoints(eventsData);
+	}
 			
   });
 
@@ -262,7 +257,7 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 	console.log (markerPostalCode);
     // extract latlng coordinates
     coordinates = addrmap[markerPostalCode];
-	console.log(coordinates);
+	 console.log(coordinates);
 	
     // create marker object
     var marker = new google.maps.Marker({
@@ -289,8 +284,12 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
     });
 
   }
+
+  
     
-</script>
+  </script>
+
+
 
 		  
 <!--
