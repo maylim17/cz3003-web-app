@@ -14,10 +14,15 @@
 		
 		for ($i=0;$i<90;$i++){
 			$area = $values->item($i)->nodeValue;
-			//echo $area;
-			$weatherData[$area] = $values->item($i+1)->nodeValue;
+	//		echo $area;
+			$weatherData[] = array (
+				"location" => [$area],
+				"weather" =>  $values->item($i+1)->nodeValue,
+			);
 			$i++;	
 		}
+	//	print_r($weatherData);
+	//	var_dump($weatherData);
 	return ($weatherData);
 	}
 ?>
