@@ -294,57 +294,104 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 
     events = eventsData;
     eventType = eventsData.events[0]["eventType"];
+    console.log(eventType);
 
-    if (eventType == "Dengue")
+    if (eventType == "Dengue") {
+
       events = calculateDengueCases(eventsData);
+      console.log(events);
+      for (var x in events) {
+        var p;
+        var latlng;
 
-	//alert(events.events[0]["postalCode"]);//["location"]); //works
-    for (var x = 0; x < events.events.length; x++) {
-      var p;
-      var latlng;
+        if (events.hasOwnProperty(x) ) {
+          postalcodestring = "Singapore " + x;
+          console.log(postalcodestring);
+        }
 
-      if (eventType == "Dengue")
-        postalcodestring = "Singapore " + events[x]["postalCode"];
-      else 
+        // to calculate size/length of javascript object used as (events) array
+        Object.size = function(obj) {
+          var size = 0, key;
+          for (key in obj) {
+            if (obj.hasOwnProperty(key)) size++;
+          } 
+          return size;
+        };
+
+        $.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address='+postalcodestring+'&sensor=false', null, function (data) {
+          p = data.results[0].geometry.location 
+          latlng = new google.maps.LatLng(p.lat, p.lng);
+          addrmap[data.results[0].formatted_address] = latlng;
+          iterations++;
+          if (iterations == Object.size(events)) {
+            populateCrisisMarkers(Object.size(events));
+          }
+        });
+      }
+    }
+    else {
+      for (var x = 0; x < events.events.length; x++) {
+        var p;
+        var latlng;
+
         postalcodestring = "Singapore " + events.events[x]["postalCode"];
 
-      $.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address='+postalcodestring+'&sensor=false', null, function (data) {
-        p = data.results[0].geometry.location 
-        latlng = new google.maps.LatLng(p.lat, p.lng);
-        addrmap[data.results[0].formatted_address] = latlng;
-        iterations++;
-        if (iterations == events.events.length) {
-          populateCrisisMarkers();
-        }
-      });
+        $.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address='+postalcodestring+'&sensor=false', null, function (data) {
+          p = data.results[0].geometry.location 
+          latlng = new google.maps.LatLng(p.lat, p.lng);
+          addrmap[data.results[0].formatted_address] = latlng;
+          iterations++;
+          if (iterations == events.events.length) {
+            populateCrisisMarkers(events.events.length);
+          }
+        });
+      }
     }
   }
 
+
   function calculateDengueCases (eventsData) {
 
-    // var dengueArray = new Object();
+    var dengueArray = new Object();
 
-    // for (var x = 0; x < eventsData.events.length; x++) {
-    //   var postal = eventsData.events[x]["postalCode"]
-    //   if (dengueArray[postal] == null)
-    //     dengueArray[postal] = 0;
-    //   else
-    //     dengueArray[postal]++;
-    // }
+    for (var x = 0; x < eventsData.events.length; x++) {
+      var postal = eventsData.events[x]["postalCode"]
+      if (dengueArray[postal] == null)
+        dengueArray[postal] = 1;
+      else
+        dengueArray[postal]++;
+    }
+    return dengueArray;
   }
 
 
   // Populate the map display with all the crisis markers
-  function populateCrisisMarkers () {
-    for (var x = 0; x < events.events.length; x++) {
-            createCrisisMarker(x);
+  function populateCrisisMarkers (length) {
+    if (eventType!="Dengue") {
+      for (var x = 0; x < length; x++) {
+        createCrisisMarker(x);
+      }
+    }
+    else {
+      for (var x in events) {
+        createCrisisMarker(x);
+      }
     }
   }
 
 
   // Create each crisis marker and add an infowindow listener 
   function createCrisisMarker (index) {
-    markerPostalCode = "Singapore "+events.events[index]["postalCode"];
+
+    var tmp;
+
+    if (eventType!="Dengue") 
+      tmp = events.events[index]["postalCode"];
+    else 
+      tmp = index;
+
+    markerPostalCode = "Singapore " + tmp;
+
     console.log (markerPostalCode);
     // extract latlng coordinates
     coordinates = addrmap[markerPostalCode];
@@ -358,15 +405,22 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 
     // set the content string for the info window (address, description, priority)
     var contentString = "No data..";
-    if (events.events[index]["priority"]==1)
-      contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: Mild</p>";
-    else if  (events[index]["priority"]==2)
-      contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: Urgent</p>";
-    else if  (events[index]["priority"]==3)
-      contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: Critical</p>";
-    else
-      contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: No data..</p>";
-    
+
+    if (eventType!="Dengue") {
+      if (events.events[index]["priority"]==1)
+        contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: Mild</p>";
+      else if  (events[index]["priority"]==2)
+        contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: Urgent</p>";
+      else if  (events[index]["priority"]==3)
+        contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: Critical</p>";
+      else
+        contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: No data..</p>";
+    }
+    // else if dengue cases
+    else {
+      contentString = "<p><b>" + markerPostalCode + "</b><br />Number of dengue cases: " + events[tmp];
+    }
+
     console.log(contentString);
     
     // add click event listener to marker which opens infowindow          
