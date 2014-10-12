@@ -209,10 +209,12 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
     map = new google.maps.Map($('#map-canvas')[0], myOptions);
 	
 	var eventsData = <?php echo json_encode($events) ;?>;
+	var weatherData = <?php echo json_encode($weatherData); ?>;
 	//console.log(eventsData);
 	if (eventsData!='weather') {
 		geocodePoints(eventsData);
 	} else {
+		console.log(weatherData);
 		//geocodeWeather(weatherData);
 	}
 			
