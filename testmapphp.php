@@ -100,106 +100,8 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@	
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
 -->
-
-<script type="text/javascript">
-    
-  var map;
-  var infowindow;
-  var coordinates;
-  var myOptions;
-  var events;
-  var addrmap = new Object();
-  var iterations = 0;
-
-
-  // events = [
-  //   {address: 'Singapore 320115', priority: 1}, 
-  //   {address: 'Singapore 639798', priority: 2}
-  // ];
-
-
-  // Initialize the map on document ready
-  $(document).ready(function () {
-    myOptions = {
-        zoom: 12,
-        center: { lat: 1.371232, lng: 103.818948},
-        mapTypeId: 'terrain'
-    };
-    map = new google.maps.Map($('#map_canvas')[0], myOptions);
-  });
-
-
-  // alert(JSON.stringify(inputArray)); //works
-  // alert(inputArray.error); //works
-  // alert(inputArray.events["1"]["location"]); //works
-
-  
-  // Geocode addresses of all points to be displayed to obtain coordinates
-  function geocodePoints (eventsData) {
-
-    events = eventsData;
-
-    for (var x = 0; x < events.length; x++) {
-          
-      var p;
-      var latlng;
-
-      $.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address='+events[x].address+'&sensor=false', null, function (data) {
-        p = data.results[0].geometry.location 
-        latlng = new google.maps.LatLng(p.lat, p.lng);
-        addrmap[data.results[0].formatted_address] = latlng;
-
-        iterations++;
-        if (iterations == events.length) {
-          populateWithMarkers();
-        }
-      });
-
-    }
-  }
-
-
-  // Populate the map display with all the markers
-  function populateWithMarkers () {
-    for (var x = 0; x < events.length; x++) {
-            createMarker(x);
-    }
-  }
-
-
-  // Create each marker and add an infowindow listener 
-  function createMarker (index) {
-
-    // extract latlng coordinates
-    coordinates = addrmap[events[index].address];
-
-    // create marker object
-    var marker = new google.maps.Marker({
-      position: coordinates,
-      map: map
-    });
-
-    // set the content string for the info window (address, description, priority)
-    var contentString = "No data..";
-    if (events[index].priority==1)
-      contentString = "<p><b>" + events[index].address + "</b><br />" + events[index].description + "<br />Severity: Mild</p>";
-    else if  (events[index].priority==2)
-      contentString = "<p><b>" + events[index].address + "</b><br />" + events[index].description + "<br />Severity: Urgent</p>";
-    else if  (events[index].priority==3)
-      contentString = "<p><b>" + events[index].address + "</b><br />" + events[index].description + "<br />Severity: Critical</p>";
-    else
-      contentString = "<p><b>" + events[index].address + "</b><br />" + events[index].description + "<br />Severity: No data..</p>";
-
-    // add click event listener to marker which opens infowindow          
-    google.maps.event.addListener(marker, 'click', function() {
-      if (infowindow) infowindow.close();
-      infowindow = new google.maps.InfoWindow({content: contentString});
-      infowindow.open(map,marker); 
-    });
-
-  }
-    
-</script>
+	
+			
 
 
   </head>
@@ -265,21 +167,130 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 					if ($typeID!=0) {
 						$events = getTestEvents($typeID, 24);	// for testing
 						//getEvents($typeID, 24);
-						var_dump($events);
+						//var_dump($events);
 					//	echo '<script type="text/javascript">', 'populateWithMarkers();', '</script>';
 					}
 				}
 			?>	
-			
+				
 			<script type="text/javascript">
+			$(document).ready(function () {
+			
 			var eventsData = <?php echo json_encode($events) ?>;
 			geocodePoints(eventsData);
+			});
 			</script>
 			
 			</div>
 			
           <br><br>
 		  
+<script type="text/javascript">
+    
+  var map;
+  var infowindow;
+  var coordinates;
+  var myOptions;
+  var events;
+  var addrmap = new Object();
+  var iterations = 0;
+  var postalcodestring;
+
+
+  // events = [
+  //   {address: 'Singapore 320115', priority: 1}, 
+  //   {address: 'Singapore 639798', priority: 2}
+  // ];
+
+
+  // Initialize the map on document ready
+  $(document).ready(function () {
+    myOptions = {
+        zoom: 12,
+        center: { lat: 1.371232, lng: 103.818948},
+        mapTypeId: 'terrain'
+    };
+    map = new google.maps.Map($('#map-canvas')[0], myOptions);
+	
+		
+	
+			
+  });
+
+
+  // alert(JSON.stringify(inputArray)); //works
+  // alert(inputArray.error); //works
+  // alert(inputArray.events["1"]["location"]); //works
+
+  
+  // Geocode addresses of all points to be displayed to obtain coordinates
+  function geocodePoints (eventsData) {
+
+    events = eventsData;
+	//alert(events.events[0]["postalCode"]);//["location"]); //works
+    for (var x = 0; x < events.events.length; x++) {
+          
+      var p;
+      var latlng;
+	  postalcodestring = "Singapore "+events.events[x]["postalCode"];
+      $.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address='+postalcodestring+'&sensor=false', null, function (data) {
+        p = data.results[0].geometry.location 
+        latlng = new google.maps.LatLng(p.lat, p.lng);
+        addrmap[data.results[0].formatted_address] = latlng;
+		console.log(data.results[0].formatted_address);
+        iterations++;
+        if (iterations == events.events.length) {
+          populateWithMarkers();
+        }
+      });
+
+    }
+  }
+
+
+  // Populate the map display with all the markers
+  function populateWithMarkers () {
+    for (var x = 0; x < events.events.length; x++) {
+            createMarker(x);
+    }
+  }
+
+
+  // Create each marker and add an infowindow listener 
+  function createMarker (index) {
+	markerPostalCode = "Singapore "+events.events[index]["postalCode"];
+	console.log (markerPostalCode);
+    // extract latlng coordinates
+    coordinates = addrmap[markerPostalCode];
+	console.log(coordinates);
+	
+    // create marker object
+    var marker = new google.maps.Marker({
+      position: coordinates,
+      map: map
+    });
+
+    // set the content string for the info window (address, description, priority)
+    var contentString = "No data..";
+    if (events.events[index]["priority"]==1)
+      contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: Mild</p>";
+    else if  (events[index]["priority"]==2)
+      contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: Urgent</p>";
+    else if  (events[index]["priority"]==3)
+      contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: Critical</p>";
+    else
+      contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: No data..</p>";
+	console.log(contentString);
+    // add click event listener to marker which opens infowindow          
+    google.maps.event.addListener(marker, 'click', function() {
+      if (infowindow) infowindow.close();
+      infowindow = new google.maps.InfoWindow({content: contentString});
+      infowindow.open(map,marker); 
+    });
+
+  }
+    
+</script>
 
 		  
 <!--
