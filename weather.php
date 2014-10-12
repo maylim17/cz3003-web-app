@@ -14,15 +14,17 @@
 		
 		for ($i=0;$i<90;$i++){
 			$area = $values->item($i)->nodeValue;
-	//		echo $area;
+			$area = preg_replace('/\s+/', '', $area);
+			$weather = $values->item($i+1)->nodeValue;
+			$weather = preg_replace('/\s+/', '', $weather);
 			$weatherData[] = array (
-				"location" => [$area],
-				"weather" =>  $values->item($i+1)->nodeValue,
+				"location" => $area,
+				"weather" => $weather,
 			);
 			$i++;	
 		}
-	//	print_r($weatherData);
-	//	var_dump($weatherData);
+		print_r($weatherData);
+		var_dump($weatherData);
 	return ($weatherData);
 	}
 ?>
