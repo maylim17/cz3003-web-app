@@ -213,7 +213,7 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 	if (eventsData!='weather') {
 		geocodePoints(eventsData);
 	} else {
-		geocodeWeather(weatherData);
+		//geocodeWeather(weatherData);
 	}
 			
   });
