@@ -14,9 +14,9 @@
 		
 		for ($i=0;$i<90;$i++){
 			$area = $values->item($i)->nodeValue;
-			$area = preg_replace('/\s+/', '', $area);
+			$area = preg_replace('/\s\s+/', '', $area);
 			$weather = $values->item($i+1)->nodeValue;
-			$weather = preg_replace('/\s+/', '', $weather);
+			$weather = preg_replace('/\s\s+/', '', $weather);
 			$weatherData[] = array (
 				"location" => $area,
 				"weather" => $weather,
