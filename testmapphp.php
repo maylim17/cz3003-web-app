@@ -110,6 +110,9 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
         <div id="box">
         <div id="options">
           
+		  
+		  
+		  
 		  <!--
           <div id="crisis-type">	
             Please select crisis type(s):
@@ -143,6 +146,11 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 			</form><br>
             
 			<?php
+			
+				//initialise strings to avoid echoing null <
+				$events = '';
+				$weatherData = '';
+			
 				if (isset($_POST['type']) && $_POST['type']!='Weather') {
 					$type = $_POST['type'];
 					
@@ -461,7 +469,13 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 
     var temp = weather.replace(/\s+/g, ""); // remove whitespace characters 
     temp = temp.replace(/[()]/g,""); // remove "(" and ")"
-    var iconurl = 'http://localhost:8888/weather/' + temp.toLowerCase() + '.png';
+	
+	// Due to different systems (mamp vs wamp) and different root directory for the projects
+	// the absolute path required is different.
+	// For mac:
+	var iconurl = 'http://localhost:8888/weather/' + temp.toLowerCase() + '.png';
+	// For wamp:
+	//var iconurl = 'http://localhost/3003/weather/' + temp.toLowerCase() + '.png';
 
     // create marker object
     var marker = new google.maps.Marker({
