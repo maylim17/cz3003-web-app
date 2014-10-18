@@ -110,7 +110,7 @@
 	// Returns the array
 	function getEvents ($requestedTypeId, $requestedTimePeriodInHour)
 	{
-		$url = 'http://172.22.245.232:9000/events';
+		$url = 'http://172.22.245.59:9000/events';
 		$data = array('typeID' => $requestedTypeId, 'timePeriodInHour' => $requestedTimePeriodInHour);
 		//$data = array('typeID' => 1, 'timePeriodInHour' => 1);
 		$postdata = http_build_query($data);

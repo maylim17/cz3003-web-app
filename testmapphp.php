@@ -166,14 +166,15 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 							break;
 					}
 					if ($typeID!=0) {
-						$events = getTestEvents($typeID, 24);	// for testing
-						//getEvents($typeID, 24);
+						//$events = getTestEvents($typeID, 24);	// for testing
+						$events = getEvents($typeID, 24);
 						//var_dump($events);
 					}
 				} else {
           $events = 'weather';  
           include 'weather.php';
           $weatherData = getWeather();
+          console.log($weatherData);
         }
 			?>	
 			
@@ -275,6 +276,7 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
   var weatherData = <?php echo json_encode($weatherData); ?>;
   //console.log(eventsData);
   if (eventsData!='weather') {
+    console.log(eventsData);
     geocodePoints(eventsData);
   } else {
     populateWeatherMarkers(weatherData);
@@ -384,6 +386,7 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
   function createCrisisMarker (index) {
 
     var tmp;
+    //console.log("pc: "+events.events[index]["postalCode"]);
 
     if (eventType!="Dengue") 
       tmp = events.events[index]["postalCode"];
@@ -405,13 +408,13 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 
     // set the content string for the info window (address, description, priority)
     var contentString = "No data..";
-
+    //console.log("p: "+events.events[index]["priority"]);
     if (eventType!="Dengue") {
       if (events.events[index]["priority"]==1)
         contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: Mild</p>";
-      else if  (events[index]["priority"]==2)
+      else if  (events.events[index]["priority"]==2)
         contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: Urgent</p>";
-      else if  (events[index]["priority"]==3)
+      else if  (events.events[index]["priority"]==3)
         contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: Critical</p>";
       else
         contentString = "<p><b>" + markerPostalCode + "</b><br />" + events.events[index]["description"] + "<br />Severity: No data..</p>";
@@ -446,13 +449,13 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 
   // Create each weather marker w custom icon, and add an infowindow listener 
   function createWeatherMarker (index) {
- 
+    console.log("place "+events[index]["location"]);
     // extract latlng coordinates
     var place = events[index]["location"];
     //place = place.replace(/\s+/g, ""); 
     var point = weathermap[place];
     console.log(place);
-    console.log(point);
+    console.log("point: "+point);
     var coord = new google.maps.LatLng(point.lat, point.lng);
     var weather = events[index]["weather"];
 
