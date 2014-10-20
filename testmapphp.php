@@ -128,8 +128,10 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 			<?php 
 				if (!isset($_POST['type']) || $_POST['type']=='Weather') {
 					echo "Displaying Weather Map.";
-				} else {
-					echo "Displaying ",$_POST['type'], " cases in the last 24 hours.";
+				}else if (!isset($_POST['hoursRequested']) || !is_numeric($_POST['hoursRequested'])){
+					echo "Invalid input. Displaying Weather Map.";
+				}else {
+					echo "Displaying ",$_POST['type'], " cases in the last ",$_POST['hoursRequested']," hours.";
 				};
 				
 			?>
@@ -142,6 +144,8 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
               <input type="radio" name="type" value="Gas">Gas Leakage<br>
 			  <input type="radio" name="type" value="Traffic">Traffic Accident<br>
 			  <!--<input type="radio" name="type" value="Fire">Fire Outbreak<br>-->
+			  in the last 
+			  <input type="text" name="hoursRequested" maxlength="2" size="4"> hour(s)<br>
 			  <input type="submit" name="submission" value="Submit"<br>
 			</form><br>
             
@@ -150,15 +154,21 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 				//initialise strings to avoid echoing null <
 				$events = '';
 				$weatherData = '';
-			
-				if (isset($_POST['type']) && $_POST['type']!='Weather') {
+
+				
+				if (isset($_POST['type']) && $_POST['type']!='Weather' && 
+					isset($_POST['hoursRequested']) && is_numeric($_POST['hoursRequested'])) {
 					$type = $_POST['type'];
+					$hoursRequested = $_POST['hoursRequested'];
+					echo "hi";
 					
-					include	 'events.php';
-         /* $eventTypes = getEventTypes ();
-          $typeID = 0;
-          $typeID = eventTypes['eventTypes'][$type];*/
+					include	'events.php';
+					include 'eventTypes.php';
 					
+					/*$eventTypes = getEventTypes ();
+					$typeID = 0;
+					$typeID = eventTypes['eventTypes'][$type];*/
+							
 					switch ($type) {
 						case 'Dengue':
 							$typeID = 1;
@@ -174,15 +184,15 @@ gmap.controls[google.maps.ControlPosition.TOP_LEFT].push(olMapDiv);
 							break;
 					}
 					if ($typeID!=0) {
-						//$events = getTestEvents($typeID, 24);	// for testing
-						$events = getEvents($typeID, 24);
+						//$events = getTestEvents($typeID, $hoursRequested);	// for testing
+						$events = getEvents($typeID, $hoursRequested);
 						//var_dump($events);
 					}
 				} else {
-          $events = 'weather';  
-          include 'weather.php';
-          $weatherData = getWeather();
-          console.log($weatherData);
+				$events = 'weather';  
+				include 'weather.php';
+				$weatherData = getWeather();
+				//  console.log($weatherData);
         }
 			?>	
 			
