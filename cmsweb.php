@@ -46,8 +46,8 @@
 			echo "
 			    <br>
 				<br>
-				Please select crisis type:<br>
-				<form action = \"testmapphp.php\" method=\"POST\">
+				Please select map type:<br>
+				<form action = \"cmsweb.php\" method=\"POST\">
 				<input type=\"radio\" name=\"type\" value=\"Weather\" >Weather<br>
 			";
 			$x = 1;
