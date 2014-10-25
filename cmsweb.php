@@ -7,13 +7,13 @@
 
       .block { float: left;}
 
-      #user-input { position: relative; height: 100%; width: 20%;}
+      #user-input { position: relative; height: 100%; width: 20%; border: 10px solid black;}
 
       #options { position: absolute; top: 5%; left: 10%;}
 
       .form {}
 
-      #map-canvas { height: 100%; width: 80%; margin: 0; padding: 0; }
+      #map-canvas { height: 100%; width: 78.5%; margin: 0; padding: 0; }
 
     </style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -56,9 +56,11 @@
 				$x++;
 			}
 
-			echo "in the last 
+			echo "in the last
 			  <input type=\"text\" name=\"hoursRequested\" maxlength=\"2\" size=\"4\"> hour(s)<br>
-			  <input type=\"submit\" name=\"submission\" value=\"Submit\"<br>
+        <br>
+        <div style=\"text-align:center\">
+			  <input type=\"submit\" name=\"submission\" value=\"Display Map\"></div><br>
 			</form><br>
             ";
 				//initialise strings to avoid echoing null <
