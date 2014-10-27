@@ -29,15 +29,21 @@
 			<?php 
 				include	'events.php';
 				include 'eventTypes.php';
-				//$eventTypes = getEventTypes();
-				$eventTypes = getEventTypesTest();
+				$eventTypes = getEventTypes();
+				//$eventTypes = getEventTypesTest();
 							
 				if (!isset($_POST['type']) || $_POST['type']=='Weather') {
 					echo "Displaying Weather Map.";
 				}else if (!isset($_POST['hoursRequested']) || !is_numeric($_POST['hoursRequested'])){
 					echo "Invalid input. Displaying Weather Map.";
 				}else {
-					echo "Displaying ",$eventTypes['eventTypes'][$_POST['type']-1]["name"], " cases <br/> in the last ",$_POST['hoursRequested']," hours.";
+					echo "Displaying ";
+					foreach ($eventTypes['eventTypes'] as $value) {
+						if ($value['id'] == $_POST['type']) {
+							echo $value['name'];
+						}
+					}
+					echo " cases <br/> in the last ",$_POST['hoursRequested']," hours.";
 				};
 				
 			
@@ -50,10 +56,10 @@
 				<form action = \"cmsweb.php\" method=\"POST\">
 				<input type=\"radio\" name=\"type\" value=\"Weather\" >Weather<br>
 			";
-			$x = 1;
+//$x = 0;
 			foreach ($eventTypes['eventTypes'] as $value) {
-				echo "<input type=\"radio\" name=\"type\" value=", $x, ">",$value['name'],"<br>";
-				$x++;
+				echo "<input type=\"radio\" name=\"type\" value=", $value['id'], ">",$value['name'],"<br>";
+				//echo "hi";echo $value['id'];//$x++;
 			}
 
 			echo "in the last
@@ -73,10 +79,11 @@
 					
 					$hoursRequested = $_POST['hoursRequested'];
 												
-					echo "debug: typeID requested = ", $typeID;
-					$events = getTestEvents($typeID, $hoursRequested);	// for testing
-					//$events = getEvents($typeID, $hoursRequested);
-					//var_dump($events);
+					//echo "debug: typeID requested = ", $typeID;
+					//$events = getTestEvents($typeID, $hoursRequested);	// for testing
+					$events = getEvents($typeID, $hoursRequested);
+					echo "<br>";echo "<br>";echo "<br>";echo "<br>";echo "<br>";echo "<br>";echo "<br>";echo "<br>";echo "<br>";	
+					var_dump($events);
 				
 				} else {
 					$events = 'weather';  
