@@ -23,7 +23,7 @@
 			);
 			$i++;	
 		}
-		var_dump($weatherData);
+		//var_dump($weatherData);
 	return ($weatherData);
 	}
 ?>

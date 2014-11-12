@@ -360,7 +360,7 @@
 	// For mac:
 	//var iconurl = 'http://localhost:8888/weather/' + temp.toLowerCase() + '.png';
 	// For wamp:
-	var iconurl = 'http://localhost/3003/weather/' + temp.toLowerCase() + '.png';
+	var iconurl = 'http://172.22.78.122/3003/weather/' + temp.toLowerCase() + '.png';
 
     // create marker object
     var marker = new google.maps.Marker({
