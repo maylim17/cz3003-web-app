@@ -7,13 +7,13 @@
 
       .block { float: left;}
 
-      #user-input { position: relative; height: 100%; width: 20%; border: 10px solid black;}
+      #user-input { position: relative; height: 100%; width: 20%;}
 
       #options { position: absolute; top: 5%; left: 10%;}
 
       .form {}
 
-      #map-canvas { height: 100%; width: 78.5%; margin: 0; padding: 0; }
+      #map-canvas { height: 100%; width: 80%; margin: 0; padding: 0; }
 
     </style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -62,11 +62,9 @@
 				//echo "hi";echo $value['id'];//$x++;
 			}
 
-			echo "in the last
+			echo "in the last 
 			  <input type=\"text\" name=\"hoursRequested\" maxlength=\"2\" size=\"4\"> hour(s)<br>
-        <br>
-        <div style=\"text-align:center\">
-			  <input type=\"submit\" name=\"submission\" value=\"Display Map\"></div><br>
+			  <input type=\"submit\" name=\"submission\" value=\"Submit\"<br>
 			</form><br>
             ";
 				//initialise strings to avoid echoing null <
@@ -83,7 +81,7 @@
 					//$events = getTestEvents($typeID, $hoursRequested);	// for testing
 					$events = getEvents($typeID, $hoursRequested);
 					echo "<br>";echo "<br>";echo "<br>";echo "<br>";echo "<br>";echo "<br>";echo "<br>";echo "<br>";echo "<br>";	
-					var_dump($events);
+					//var_dump($events);
 				
 				} else {
 					$events = 'weather';  
