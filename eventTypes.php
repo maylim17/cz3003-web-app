@@ -11,7 +11,7 @@ $decoded = json_decode($result, TRUE);
 return $decoded;
 }
   
-function getEventTypesTest() {
+/*function getEventTypesTest() {
 
 	$eventTypes = array (
 		'error'=> 0,
@@ -37,7 +37,7 @@ function getEventTypesTest() {
 		
 	return $eventTypes;
 
-}
+}*/
 
  
 ?>

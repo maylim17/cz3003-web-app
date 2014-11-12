@@ -1,5 +1,14 @@
 <!DOCTYPE html>
 
+
+<!--
+
+		TO CHANGE:
+		PC'S ip address in eventTypes and events
+		Server's address in line 372 iconurl
+
+-->
+
 <html>
   <head>
     <style type="text/css">
